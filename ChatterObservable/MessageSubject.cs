@@ -3,21 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+namespace ChatterObservable;
 
-namespace ChatterObservable
+public class MessageSubject : Subject
 {
-    public class MessageSubject : Subject
-    {
-        private MessageModel message = new();
+    private MessageModel message = new();
 
-        public MessageModel Message
+    public MessageModel Message
+    {
+        get => message;
+        set
         {
-            get => message;
-            set
-            {
-                message = value;
-                Notify();
-            }
+            message = value;
+            Notify();
         }
     }
 }
+

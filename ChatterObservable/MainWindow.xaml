@@ -5,14 +5,22 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ChatterObservable"
         mc:Ignorable="d"
+        ResizeMode="NoResize"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        <Button Content="Start Client" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Click="Button_Click" Width="132" Height="30"/>
-        <TextBox Name="Username" HorizontalAlignment="Left" Margin="147,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="280" RenderTransformOrigin="-0.055,-0.617" Height="30"/>
-        <Label Content="Nr Clients" HorizontalAlignment="Left" Margin="432,12,0,0" VerticalAlignment="Top" Width="117" Height="28"/>
-        <Label Name="lbl_userCount" HorizontalAlignment="Left" Margin="549,12,0,0" VerticalAlignment="Top" Height="28"/>
-        <ListBox ItemsSource="{Binding Messages}" Margin="10,62,355,10"/>
-        <ListBox ItemsSource="{Binding Connections}" Margin="365,62,5,10"/>
-
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="350" />
+        </Grid.RowDefinitions>
+        <Button Content="Start Client" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="5" VerticalAlignment="Center" Click="Button_Click" Width="150" Height="30"/>
+        <TextBox  Name="Username" HorizontalAlignment="Right" Margin="5" VerticalContentAlignment="Center" TextWrapping="Wrap" VerticalAlignment="Center" Width="230" Height="30"/>
+        <Label Grid.Column="1" Grid.Row="0" Content="Nr Clients" FontWeight="Bold" FontSize="16" HorizontalAlignment="Left" HorizontalContentAlignment="Center" VerticalAlignment="Center" Margin="5" Width="150" Height="30"/>
+        <Label Grid.Column="1" Grid.Row="0" Name="lbl_userCount" HorizontalAlignment="Center" VerticalAlignment="Center" Height="30" FontWeight="Bold" FontSize="16" VerticalContentAlignment="Center"/>
+        <ListBox Grid.Column="0" Grid.Row="1" ItemsSource="{Binding Messages}" Margin="5"/>
+        <ListBox Grid.Column="1" Grid.Row="1" Margin="5" ItemsSource="{Binding Connections}" />
     </Grid>
 </Window>

@@ -13,73 +13,68 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+namespace ChatterObservable;
 
-namespace ChatterObservable
+public partial class Chatter : Window, INotifyPropertyChanged, IObserver
 {
-    /// <summary>
-    /// Interaction logic for Chatter.xaml
-    /// </summary>
-    public partial class Chatter : Window, INotifyPropertyChanged, IObserver
+    private readonly MessageSubject subject;
+    private MessageModel message = new();
+    public ObservableCollection<MessageModel> Messages { get; set; } = new();
+    public ObservableCollection<MessageModel> Connections { get; set; } = new();
+
+    public string? ClientName { get; set; }
+
+    public Chatter(MessageSubject subject, string clientName)
     {
-        private readonly MessageSubject subject;
-        private MessageModel message = new();
-        public ObservableCollection<MessageModel> Messages { get; set; } = new();
-        public ObservableCollection<MessageModel> Connections { get; set; } = new();
+        InitializeComponent();
+        this.subject = subject;
+        ClientName = clientName;
+        UserName.Content = clientName;
+        DataContext = this;
+        subject.Attach(this);
+    }
+    public event PropertyChangedEventHandler? PropertyChanged;
 
-        public string? ClientName { get; set; }
+    protected void OnPropertyChanged(string propertyName)
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
+    public void Update()
+    {
+        if (!CheckAccess())
+        {
+            Dispatcher.Invoke(Update);
+        }
+        Messages.Add(subject.Message);
+    }
+    private void Button_Click(object sender, RoutedEventArgs e)
+    {
+        var msg = new MessageModel()
+        {
+            Message = tbx_Message.Text,
+            Username = ClientName
+        };
+        subject.Message = msg;
+    }
 
-        public Chatter(MessageSubject subject, string clientName)
+    public void ClientAttach(string name)
+    {
+        Messages.Add(new MessageModel
         {
-            InitializeComponent();
-            this.subject = subject;
-            this.ClientName = clientName;
-            UserName.Content = clientName;
-            DataContext = this; 
-            subject.Attach(this);
-        }
-        public event PropertyChangedEventHandler? PropertyChanged;
-
-        protected void OnPropertyChanged(string propertyName)
+            Message = "has connected",
+            Username = name
+        });
+    }
+    public void ClientDetach(string name)
+    {
+        Messages.Add(new MessageModel
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-        public void Update()
-        {
-            if (!CheckAccess())
-            {
-                Dispatcher.Invoke(Update);
-            }
-            Messages.Add(subject.Message);
-        }
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            var msg = new MessageModel()
-            {
-                Message = tbx_Message.Text,
-                Username = ClientName
-            };
-            subject.Message = msg;
-        }
-
-        public void ClientAttach(string name)
-        {
-            Messages.Add(new MessageModel
-            {
-                Message = "has connected",
-                Username = name
-            });
-        }
-        public void ClientDetach(string name)
-        {
-            Messages.Add(new MessageModel
-            {
-                Message = "has disconnected",
-                Username = name
-            });
-        }
-        private void Window_Closing(object sender, CancelEventArgs e)
-        {
-            this.subject.Detach(this);
-        }
+            Message = "has disconnected",
+            Username = name
+        });
+    }
+    private void Window_Closing(object sender, CancelEventArgs e)
+    {
+        this.subject.Detach(this);
     }
 }
