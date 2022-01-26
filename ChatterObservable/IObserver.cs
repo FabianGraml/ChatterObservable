@@ -2,8 +2,10 @@
 
 public interface IObserver
 {
+    public string? ClientName { get; }
+
     public void Update();
-    public void ClientAttach();
-    public void ClientDetach();
+    public void ClientAttach(string name);
+    public void ClientDetach(string name);
 
 }

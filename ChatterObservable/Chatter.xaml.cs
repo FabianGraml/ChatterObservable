@@ -23,16 +23,17 @@ namespace ChatterObservable
     {
         private readonly MessageSubject subject;
         private MessageModel message = new();
-        private string userName;
         public ObservableCollection<MessageModel> Messages { get; set; } = new();
         public ObservableCollection<MessageModel> Connections { get; set; } = new();
 
-        public Chatter(MessageSubject subject, string userName)
+        public string? ClientName { get; set; }
+
+        public Chatter(MessageSubject subject, string clientName)
         {
             InitializeComponent();
-            this.userName = userName;
             this.subject = subject;
-            UserName.Content = userName;
+            this.ClientName = clientName;
+            UserName.Content = clientName;
             DataContext = this; 
             subject.Attach(this);
         }
@@ -42,14 +43,12 @@ namespace ChatterObservable
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-      //public MessageModel Message { get => message; set { message = value ?? null!; OnPropertyChanged(nameof(message)); } }
         public void Update()
         {
             if (!CheckAccess())
             {
                 Dispatcher.Invoke(Update);
             }
-            // Message = subject.Message;
             Messages.Add(subject.Message);
         }
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -57,25 +56,25 @@ namespace ChatterObservable
             var msg = new MessageModel()
             {
                 Message = tbx_Message.Text,
-                Username = userName
+                Username = ClientName
             };
             subject.Message = msg;
         }
 
-        public void ClientAttach()
+        public void ClientAttach(string name)
         {
             Messages.Add(new MessageModel
             {
                 Message = "has connected",
-                Username = userName
+                Username = name
             });
         }
-        public void ClientDetach()
+        public void ClientDetach(string name)
         {
             Messages.Add(new MessageModel
             {
                 Message = "has disconnected",
-                Username = userName
+                Username = name
             });
         }
         private void Window_Closing(object sender, CancelEventArgs e)

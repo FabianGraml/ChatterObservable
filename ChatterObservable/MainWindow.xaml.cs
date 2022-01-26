@@ -22,8 +22,11 @@ namespace ChatterObservable
     public partial class MainWindow : Window, IObserver
     {
         private MessageSubject messageSubject = new MessageSubject();
+
         public ObservableCollection<MessageModel> Messages { get; set; } = new();
         public ObservableCollection<MessageModel> Connections { get; set; } = new();
+
+        public string? ClientName => Username.Text.ToString();
 
         public MainWindow()
         {
@@ -35,7 +38,7 @@ namespace ChatterObservable
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             string userName = Username.Text;
-            var window = new Chatter(messageSubject, userName);
+            var window = new Chatter(messageSubject, ClientName!);
             window.Show();
         }
 
@@ -44,10 +47,10 @@ namespace ChatterObservable
             Messages.Add(messageSubject.Message);
         }
 
-        public void ClientAttach()
+        public void ClientAttach(string name)
         {
             lbl_userCount.Content = messageSubject.observers.Count();
-            var res = Username.Text == "" ? "Server" : Username.Text.ToString();
+            var res = name == "" ? "Server" : name;
 
             Connections.Add(new MessageModel()
             {
@@ -56,8 +59,14 @@ namespace ChatterObservable
             });
             
         }
-        public void ClientDetach()
+        public void ClientDetach(string name)
         {
+
+            Connections.Add(new MessageModel()
+            {
+                Message = "detached",
+                Username = name,
+            });
             lbl_userCount.Content = messageSubject.observers.Count();
         }
 
