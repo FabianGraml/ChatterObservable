@@ -1,5 +1,4 @@
 ﻿namespace ChatterObservable;
-
 public interface IObserver
 {
     public string? ClientName { get; }

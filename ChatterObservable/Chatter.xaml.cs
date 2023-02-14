@@ -1,29 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 namespace ChatterObservable;
-
 public partial class Chatter : Window, INotifyPropertyChanged, IObserver
 {
     private readonly MessageSubject subject;
     private MessageModel message = new();
     public ObservableCollection<MessageModel> Messages { get; set; } = new();
     public ObservableCollection<MessageModel> Connections { get; set; } = new();
-
     public string? ClientName { get; set; }
-
     public Chatter(MessageSubject subject, string clientName)
     {
         InitializeComponent();
@@ -34,7 +19,6 @@ public partial class Chatter : Window, INotifyPropertyChanged, IObserver
         subject.Attach(this);
     }
     public event PropertyChangedEventHandler? PropertyChanged;
-
     protected void OnPropertyChanged(string propertyName)
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
@@ -56,7 +40,6 @@ public partial class Chatter : Window, INotifyPropertyChanged, IObserver
         };
         subject.Message = msg;
     }
-
     public void ClientAttach(string name)
     {
         Messages.Add(new MessageModel
